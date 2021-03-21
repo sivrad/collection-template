@@ -1,7 +1,7 @@
 <p align="center"><img height="220px" src="https://i.imgur.com/48BeKfE.png" alt="Logo" /><p>
 
 <p align="center">
-  <strong>MOT Collection</strong><br />
+  <strong>Sivrad Knowledgebase Collection</strong><br />
   <sub>The base collection class.</sub>
 </p>
 
@@ -12,7 +12,7 @@
 # Installation
 
 ```sh
-yarn add @mot/collection
+yarn add @skb/collection
 ```
 
 # Usage

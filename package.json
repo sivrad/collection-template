@@ -1,5 +1,5 @@
 {
-    "name": "@mot/collection",
+    "name": "@skb/collection",
     "version": "1.0.0",
     "description": "The base collection class.",
     "main": "./dist/index.js",
