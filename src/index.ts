@@ -1,2 +1,3 @@
 export { Collection } from './collection';
-export { Thing } from './thing';
+export { BaseThing } from './baseThing';
+export * from './decorators';

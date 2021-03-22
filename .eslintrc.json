@@ -26,6 +26,7 @@
                 "location": "start"
             }
         ],
+        "@typescript-eslint/ban-types": 1,
         "jsdoc/require-jsdoc": [
             "error",
             {
