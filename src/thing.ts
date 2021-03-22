@@ -1,7 +1,8 @@
 // Thing Class
 
 import { Collection } from './collection';
-import { UninstantiatedThingError } from './errors';
+// import { UninstantiatedThingError } from './errors';
+import { Field } from './field';
 import { Data } from './types';
 
 /**
@@ -25,6 +26,9 @@ export abstract class Thing {
     ) {
         // const isInstance = identifier != null;
     }
+
+    @Field
+    public attr: string;
 
     //////////////////////////////////////
     //                                  //
@@ -53,9 +57,9 @@ export abstract class Thing {
      * @param {string} identifier Identifier of the instance.
      * @returns {Promise<Thing | null>} `Thing` if exists, `null` if not.
      */
-    static async get(identifier: string): Promise<Thing | null> {
-        // Implement this
-    }
+    // static async get(identifier: string): Promise<Thing | null> {
+    //     // Implement this
+    // }
 
     /**
      * Remove an instance of a thing from an identifier.
@@ -66,10 +70,10 @@ export abstract class Thing {
      * @param {string} identifier Identifier of the instance.
      * @returns {Promise<boolean>} `true` if removed successfully, `false` if not.
      */
-    static async remove(identifier: string): Promise<boolean> {
-        // Implement this
-        return false;
-    }
+    // static async remove(identifier: string): Promise<boolean> {
+    //     // Implement this
+    //     return false;
+    // }
 
     //////////////////////////////////////
     //                                  //
@@ -100,14 +104,14 @@ export abstract class Thing {
      * @async
      * @returns {Promise<boolean>} `true` if removed successfully, `false` if not.
      */
-    async remove(): Promise<boolean> {
-        // Test if thing is uninstantiated.
-        if (!this.isInstantiated())
-            throw new UninstantiatedThingError(
-                'An UninstantiatedThing can not be deleted.',
-            );
-        return await Thing.remove(this.identifier as string);
-    }
+    // async remove(): Promise<boolean> {
+    //     // Test if thing is uninstantiated.
+    //     if (!this.isInstantiated())
+    //         throw new UninstantiatedThingError(
+    //             'An UninstantiatedThing can not be deleted.',
+    //         );
+    //     return await Thing.remove(this.identifier as string);
+    // }
 
     /**
      * Verify the given data for a `Thing`.
@@ -118,7 +122,7 @@ export abstract class Thing {
      * @param {Data} data The given data.
      * @returns {Promise<boolean>} `true` if valid data, `false` if not.
      */
-    async verifyData(data: Data): Promise<boolean> {
-        return true;
-    }
+    // async verifyData(data: Data): Promise<boolean> {
+    //     return true;
+    // }
 }

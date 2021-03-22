@@ -2,9 +2,8 @@ import { CollectionThing, CollectionThings } from './types';
 
 /**
  * Base Collection Class.
- * @abstract
  */
-export abstract class Collection {
+export class Collection {
     /**
      * Constructor for a collection.
      * @param {string} identifier  Identifier of the collection.
@@ -24,7 +23,9 @@ export abstract class Collection {
      * @abstract
      * @returns {CollectionThings} Array of thing classes.
      */
-    abstract getThingClasses(): CollectionThings;
+    getThingClasses(): CollectionThings {
+        throw Error('IMPLEMENT');
+    }
 
     /**
      * Returns a Thing class from a collection.
