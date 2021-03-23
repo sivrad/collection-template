@@ -1,21 +1,40 @@
+// Thing Decorator
 import 'reflect-metadata';
 import { Collection } from '../collection';
-import { ObjectOf } from '../types';
+import { defineMetadata, toLabel } from '../util';
 
-export const Thing = (collection: Collection, label: string) => <
+export const Thing = (collection: Collection, label: string | null = null) => <
     T extends { new (...args: any[]): Object }
 >(
     constructor: T,
 ): typeof constructor => {
+    // Get the name of the class.
     const name = constructor.name;
-    const newClass: ObjectOf<any> = {};
-    newClass['cls'] = class extends constructor {};
-    Reflect.defineMetadata('skb:collection', collection, newClass['cls']);
-    Reflect.defineMetadata('skb:name', name, newClass['cls']);
-    Reflect.defineMetadata('skb:label', label, newClass['cls']);
-    Reflect.defineMetadata('skb:fields', {}, newClass['cls']);
+    // Get the label.
+    label = label || toLabel(name);
 
-    collection.addThingClass(newClass['cls'] as any);
+    // In order to retain the Class's name,
+    // you have to do this work around.
+    // All this is doing is creating a new class.
+    const thing = [
+        class extends constructor {
+            // You can add attributes here
+        },
+    ][0];
 
-    return newClass['cls'];
+    // Edit metadata values here:
+    const metadata = {
+        collection,
+        name,
+        label,
+        isDecorated: true,
+    };
+
+    // Adds the metadata using reflect-metadata.
+    defineMetadata(thing, metadata);
+
+    // Add the thing to the collection.
+    collection.addThingClass(thing as any);
+    // Return the Thing.
+    return thing;
 };

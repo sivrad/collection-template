@@ -5,19 +5,23 @@ const testCollection = new Collection('test', 'Test Collection', 'For testing');
 /**
  * Hi.
  */
-@Thing(testCollection, 'Greeter')
+@Thing(testCollection)
 class Hi extends BaseThing {
-    collection = 'std';
-
     @Field()
     name: string;
 }
 
-const hol = new Hi();
+/**
+ * Yo.
+ */
+@Thing(testCollection)
+class Yo extends Hi {
+    @Field()
+    age: number;
+}
 
-console.log(hol.toString());
-console.log(Hi.getName());
+// const hol = new Hi();
 
-console.log(testCollection);
+console.log(Yo.getFields());
 
 // console.log(Hi.getLabel());

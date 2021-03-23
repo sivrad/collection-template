@@ -14,10 +14,40 @@ export class Collection {
      * @param {string}           description  Description of the collection.
      */
     constructor(
-        public identifier: string,
-        public label: string,
-        public description: string,
+        private identifier: string,
+        private label: string,
+        private description: string,
     ) {}
+
+    /**
+     * Returns the `Collection`'s identifier.
+     * @function getIdentifier
+     * @memberof BaseThing
+     * @returns {string} `Collection`'s identifier.
+     */
+    getIdentifier(): string {
+        return this.identifier;
+    }
+
+    /**
+     * Returns the `Collection`'s label.
+     * @function getLabel
+     * @memberof BaseThing
+     * @returns {string} `Collection`'s label.
+     */
+    getLabel(): string {
+        return this.label;
+    }
+
+    /**
+     * Returns the `Collection`'s description.
+     * @function getDescription
+     * @memberof BaseThing
+     * @returns {string} `Collection`'s description.
+     */
+    getDescription(): string {
+        return this.description;
+    }
 
     /**
      * Returns a Thing class from a collection.

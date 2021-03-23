@@ -1,5 +1,7 @@
 import 'reflect-metadata';
-// import { UndecoratedThing } from './errors';
+import { Collection } from './collection';
+import { UndecoratedThing } from './errors';
+import { ThingField } from './thingField';
 import { ThingFieldObject } from './types';
 
 /**
@@ -7,11 +9,14 @@ import { ThingFieldObject } from './types';
  * @abstract
  */
 export abstract class BaseThing {
+    private static fields: ThingFieldObject = {};
+
     /**
      * Constructor for a BaseThing.
      */
     constructor() {
-        // TODO: Verify the existance of the SKB metadata.
+        // Verify the existance of the SKB metadata.
+        this.verifyMetadata();
     }
 
     /**
@@ -24,20 +29,75 @@ export abstract class BaseThing {
      * @returns {unknown} Metadata value.
      */
     private static getMetadata<T = unknown>(metadataKey: string): T {
+        if (!metadataKey.includes(':')) metadataKey = `skb:${metadataKey}`;
         return Reflect.getMetadata(metadataKey, this);
     }
 
     /**
-     * Return SKB specific metadata.
-     * @function getMetadata
+     * Return the collection Id and Thing type.
+     * @function getType
      * @memberof BaseThing
-     * @private
      * @static
-     * @param {string} metadataKey The metadata key.
-     * @returns {T} Metadata value.
+     * @returns {string} The Thing type id.
      */
-    private static getSKBMetadata<T = unknown>(metadataKey: string): T {
-        return this.getMetadata<T>(`skb:${metadataKey}`);
+    static getType(): string {
+        return `${this.getCollection().getIdentifier()}.${this.getName()}`;
+    }
+
+    /**
+     * Return the `Thing`'s name.
+     * @function getName
+     * @memberof BaseThing
+     * @static
+     * @returns {string} Name.
+     */
+    static getName(): string {
+        return this.getMetadata('name') as string;
+    }
+
+    /**
+     * Return the `Thing`'s label.
+     * @function getLabel
+     * @memberof BaseThing
+     * @static
+     * @returns {string} Label.
+     */
+    static getLabel(): string {
+        return this.getMetadata('label') as string;
+    }
+
+    /**
+     * Return the fields for a `Thing`.
+     * @function getFields
+     * @memberof Thing
+     * @static
+     * @returns {ThingFieldObject} Object of the Thing's fields.
+     */
+    static getFields(): ThingFieldObject {
+        return this.fields;
+    }
+
+    /**
+     * Add a `ThingField` to the `Thing`'s fields.
+     * @function addField
+     * @memberof Thing
+     * @static
+     * @param {ThingField} field The `ThingField` to add.
+     * @returns {void}
+     */
+    static addField(field: ThingField): void {
+        this.fields[field.identifier] = field;
+    }
+
+    /**
+     * Return the `Collection` for the `Thing`.
+     * @function getCollection
+     * @memberof BaseThing
+     * @static
+     * @returns {Collection} The assosiated collection.
+     */
+    static getCollection(): Collection {
+        return this.getMetadata('collection') as Collection;
     }
 
     /**
@@ -49,44 +109,40 @@ export abstract class BaseThing {
      * @returns {unknown} Metadata value.
      */
     private getMetadata<T = unknown>(metadataKey: string): T {
+        if (!metadataKey.includes(':')) metadataKey = `skb:${metadataKey}`;
         return Reflect.getMetadata(metadataKey, this.constructor);
     }
 
     /**
-     * Return SKB specific metadata.
-     * @function getSKBMetadata
+     * Verify the existance of metadata.
+     * @function verifyMetadata
+     * @memberof BaseThing
      * @private
-     * @param {string} metadataKey The metadata key.
-     * @returns {T} Metadata value.
+     * @returns {void}
      */
-    private getSKBMetadata<T = unknown>(metadataKey: string): T {
-        return this.getMetadata<T>(`skb:${metadataKey}`);
+    private verifyMetadata(): void {
+        if (!(this.getMetadata('isDecorated') || false))
+            throw new UndecoratedThing();
     }
 
     /**
-     * Return the `Thing`'s name.
-     * @returns {string} Name.
+     * Return the type of the `Thing`.
+     * @function getType
+     * @memberof BaseThing
+     * @returns {string} The type of the `Thing`.
      */
-    static getName(): string {
-        return this.getSKBMetadata('name') as string;
+    getType(): string {
+        return `${this.getCollection().getIdentifier()}.${this.getTypeName()}`;
     }
 
     /**
-     * Return the `Thing`'s label.
-     * @returns {string} Label.
+     * Return the `Collection` for the `Thing`.
+     * @function getCollection
+     * @memberof BaseThing
+     * @returns {Collection} The `Collection` for the `Thing`.
      */
-    static getLabel(): string {
-        return this.getSKBMetadata('label') as string;
-    }
-
-    /**
-     * Return the fields for a `Thing`.
-     * @function getFields
-     * @memberof Thing
-     * @returns {ThingFieldObject} Object of the Thing's fields.
-     */
-    static getFields(): ThingFieldObject {
-        return this.getSKBMetadata('fields') as ThingFieldObject;
+    getCollection(): Collection {
+        return this.getMetadata('collection') as Collection;
     }
 
     /**
@@ -94,7 +150,7 @@ export abstract class BaseThing {
      * @returns {string} Name.
      */
     getTypeName(): string {
-        return this.getSKBMetadata('name') as string;
+        return this.getMetadata('name') as string;
     }
 
     /**
@@ -102,7 +158,7 @@ export abstract class BaseThing {
      * @returns {string} Label.
      */
     getTypeLabel(): string {
-        return this.getSKBMetadata('label') as string;
+        return this.getMetadata('label') as string;
     }
 
     /**
@@ -110,6 +166,6 @@ export abstract class BaseThing {
      * @returns {string} String representation.
      */
     toString(): string {
-        return `instance of ${this.getTypeName()}`;
+        return `<${this.getType()}#0000>`;
     }
 }

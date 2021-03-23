@@ -1,4 +1,5 @@
 import { BaseThing } from './baseThing';
+import { ThingField } from './thingField';
 
 /**
  * `Thing` class.
@@ -13,4 +14,4 @@ export type ObjectOf<T> = Record<string, T>;
 
 export type Data = ObjectOf<unknown>;
 
-export type ThingFieldObject = ObjectOf<BaseThing>;
+export type ThingFieldObject = ObjectOf<ThingField>;
