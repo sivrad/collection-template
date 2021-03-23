@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Collection } from './collection';
 import { UndecoratedThing } from './errors';
 import { ThingField } from './thingField';
-import { ThingFieldObject } from './types';
+import { CollectionThing, CollectionThings, ThingFieldObject } from './types';
 
 /**
  * The base `Thing` class.
@@ -98,6 +98,52 @@ export abstract class BaseThing {
      */
     static getCollection(): Collection {
         return this.getMetadata('collection') as Collection;
+    }
+
+    /**
+     * Return the `Thing`'s parents.
+     * @function getParents
+     * @memberof BaseThing
+     * @static
+     * @param   {boolean} includeChild Include the `Thing` in the parent array.
+     * @returns {CollectionThings} All the parent classes.
+     */
+    static getParents(includeChild = false): CollectionThings {
+        const parentNames = this.getMetadata('parents') as [
+                Collection,
+                string,
+            ][],
+            parents: CollectionThings = [];
+        for (const [collection, name] of parentNames) {
+            const thing = collection.getThingClass(name);
+            if (thing == null) throw new Error('thing is null');
+            parents.push(thing);
+        }
+        if (!includeChild) parents.pop();
+        return parents;
+    }
+
+    /**
+     * Return the `Thing`'s parent.
+     * @function getParent
+     * @memberof BaseThing
+     * @static
+     * @returns {CollectionThing} The `Thing`'s parent, `null` if no parent.
+     */
+    static getParent(): CollectionThing | null {
+        const parents = this.getParents();
+        if (parents.length == 0) return null;
+        return parents.pop()!;
+    }
+
+    /**
+     * Returns a string showing the parents of a `Thing`.
+     * @returns {string} Parents path.
+     */
+    static getParentsPath(): string {
+        return this.getParents(true)
+            .map((parent) => parent.getType())
+            .join('->');
     }
 
     /**

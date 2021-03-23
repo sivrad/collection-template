@@ -1,6 +1,7 @@
 // Thing Decorator
 import 'reflect-metadata';
 import { Collection } from '../collection';
+import { METADATA_PREFIX } from '../constants';
 import { defineMetadata, toLabel } from '../util';
 
 export const Thing = (collection: Collection, label: string | null = null) => <
@@ -22,12 +23,26 @@ export const Thing = (collection: Collection, label: string | null = null) => <
         },
     ][0];
 
+    // Get the parents list.
+    const parents = [
+        // Copy the list to not interfere with parents
+        ...((Reflect.getMetadata(`${METADATA_PREFIX}:parents`, thing) as [
+            // This metadata property contains an array
+            // 0th element is the collection instance
+            Collection,
+            // 1st element is the name of the Thing
+            string,
+        ][]) || []),
+    ];
+    parents.push([collection, name]);
+
     // Edit metadata values here:
     const metadata = {
         collection,
         name,
         label,
         isDecorated: true,
+        parents,
     };
 
     // Adds the metadata using reflect-metadata.
